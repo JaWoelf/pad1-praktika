@@ -1,25 +1,27 @@
 #include <iostream>
-
 using namespace std;
+
 
 int main(void)
 {
-  // Set vars
-  int length, volume, surface, square;
+    /*vars*/
+    int length, volume, surface, square, i;
 
-  // Get Userinput
-  cout << "Gibe Integer!\n";
-  cin >> length;
+    cout << "Geben Sie eine ganze Zahl ein!" << endl;
 
-  // Calculate results
-  square = length * length;
-  surface = 6 * square;
-  volume = square * length;
+    /*user input*/
+    cin >> length;
 
-  // Print results
-  cout << "Oberfläche: " << surface << endl;
-  cout << "Volumen: " << volume << endl;
+    /*calculation*/
+    //length = i;
+    square = length * length;
+    surface = 6 * square;
+    volume = square * length;
 
-  return 0;
+    /*result*/
+    cout << "Oberflaeche: " << surface << endl;
+    cout << "Volumen: " << volume << endl;
 
+
+    return 0;
 }

@@ -1,39 +1,42 @@
 #include <iostream>
 
+
 using namespace std;
 
-int main(void)
+int main()
 {
-  // Set input vars
-  double a,b,c;
-  double sum,product,average;
+    //var
+    double x, y, z, sum, product, average;
 
-  // Welcome
-  cout << "Double Floatingpoint Calculator\n\n"
-          "This programm will take 3 floating-point numbers to calculate and return\n"
-          "SUM, PRODUCT, AVERAGE.\n\n";
+    // task
+    cout << "\n --> Geben Sie 3 Zahlen als double ein\n" << endl;
+    cout << "----------------------------------------------------" << endl;
+    cout << "Info: Dezimaltrennzeichen [.]!                     |" << endl;
+    cout << "Info: Trennung der Zahlen mit einem Leerzeichen!   |" << endl;
+    cout << "Beispiel: 5.2 3.7 1.4                              |" << endl;
+    cout << "----------------------------------------------------\n" << endl;
 
-  // Get Userinput
-  cout << "Define first number:\n";
-  cin >> a;
-  cout << "Define second number:\n";
-  cin >> b;
-  cout << "Define third number:\n";
-  cin >> c;
 
-  // Calculate results
-  sum = a+b+c;
-  product = a*b*c;
-  average = a*b*c/3;
+    // process input
+    cout << "Eingabe: ";
+    cin >>x>>y>>z;
 
-  // Print results
-  cout << "--------------\n"
-          "Input given: " << a << ", " << b << ", " << c << "\n"
-          "--------------\n";
-  cout << "Sum: " << sum << "\n";
-  cout << "Product: " << product << "\n";
-  cout << "Average: " << average << "\n";
 
-  return 0;
+    // calculation
+    sum = x + y + z;
+    product = x * y * z;
+    average = (x + y + z)/3;
 
+
+    //result
+    cout << "----------------------------------------------------\n" << endl;
+    cout << "Summe [+]:        " << sum << endl;
+    cout << "Produkt [*]:      " << product << endl;
+    cout << "Durchschnitt:     " << average << endl;
+
+    cout << "----------------------------------------------------\n" << endl;
+    cout << "[Done]" << endl;
+
+
+    return 0;
 }

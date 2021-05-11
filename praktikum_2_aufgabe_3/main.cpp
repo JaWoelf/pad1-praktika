@@ -4,30 +4,31 @@ using namespace std;
 
 int main()
 {
-  char input;
-  //  großbuchstabe   ASCII dez: 65 - 90;
-  //  kleinbuchstaben ASCII Dez: 97 - 122;
+    // uppercase char ASCII dez: 65 - 90
+    // lowercase char ASCII dez: 97 - 122
 
-  //runtime at infinito
-  while (true){
-      // get char input
-      cout << "Type a lowercase char (a-z).\n";
-      cin >> input;
+    //get Input
+    char input;
 
-      // perform checks on input
-      if (input == 0){
-          cout << "\nABORT PROGRAMM\n";
-          return 0;
+    // loop forever
+    while (true){
 
-      //actually lowercase char?
-      }else if ((input >= 'a') && (input <= 'z' )){
-          input -= 32;
-          cout << "Here's your input in uppercase: " << input << "\n";
+        //Verify Lower Case
+        cout << "Type a lowercase char (a-z):"<<endl;
+        cin >> input;
 
-      // wrong input
-      }else{
-          cout << "\nERROR: Input was malformated.";
-      }
-    } //while
+        //check input
+        if (input == 0){
+            cout << "Exit."<<endl;
+            return 0;
+        } else if ((input >= 97) && (input <= 122)){
+            input = input - 32;
+            cout << "Input in uppercase: "<< char(input)<<endl;
+        } else {
+            //error handling
+            cout << "There is something wrong with what you entered."<<endl;
+        }
+    }
+
+    return 0;
 }
-

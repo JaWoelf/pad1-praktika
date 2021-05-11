@@ -4,51 +4,41 @@ using namespace std;
 
 int main()
 {
-  const int sum = 10000;
-  const double rate = 0.07;
+    const double credit = 10000;
+    const double rate = 0.07;
+    int year = 0;
+    double annuity,
+           zinswert,
+           leftToPay,
+           tilgung;
 
-  double annuity,
-         interest,
-         repayment,
-         balance = sum;
-
-  int    year = 0;
-
-  // UI
-  while(true){
-    cout << "10.000 Loan at 7% interest\n"
-            "What is your annuity of choice?\n";
-            "Annuity must be 701€ or higher.\n";
+    // Interface
+    cout << "Kreditsumme: 10.000 Euro" << endl;
+    cout << "Geben Sie die Annuitaet an:" << endl;
     cin >> annuity;
-    cout << "\n\n";
+    cout << "\n\n" << endl;
 
 
-    // ensure annuity is above interest, otherwise repayment couldn't happen.
-    if (annuity > ( sum * rate)){
-        break;
-      }
-  }
+    //calc
+    leftToPay = credit;
 
-  // Calculation
-  // each while cycle is a year
-  while (balance > 0){
-    year ++;
-    interest = balance * rate;
-    repayment = annuity - interest;
-    balance = balance - repayment;
+    while (leftToPay > 0) {
+        year ++;
+        zinswert = leftToPay * rate;
+        leftToPay = zinswert + leftToPay;
 
 
+        if (leftToPay < annuity){
+            tilgung = leftToPay;
+            leftToPay = 0;
 
-    if ((balance + interest) < annuity){
-        // schluss rate
-        cout << "Year: " << year << ", Interest: " << interest << "€, Repayment: " << balance << "€, Rest: " << 0 << "€\n";
-        return 0;
-    }else{
-        cout << "Year: " << year << ", Interest: " << interest << "€, Repayment: " << repayment << "€, Rest: " << balance << "€\n";
-      }
+        } else {
+            leftToPay = leftToPay - annuity;
+            tilgung = annuity - zinswert;
+        }
 
-  }//while
 
-  return 0;
+        cout << "Jahr: " << year << ",      Zinsen: " << zinswert << "Euro,             Tilgung:" << tilgung << "Euro,              Restschuld:" << leftToPay << endl;
+    }
+    return 0;
 }
-

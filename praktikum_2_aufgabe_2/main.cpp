@@ -5,74 +5,62 @@ using namespace std;
 
 int main()
 {
-  int input = 0;
+    int input=0,
+        process_input;
 
-  // UI
-  cout << "Integer factorization\n"
-          " - Takes a positive Integer\n"
-          " - Prints the results of prime decomposition of that Integer\n.";
-
-  //Ensure positive Integer
-  while (!(input > 0)){
-      cout << "\nSet positive Integer:\n";
-      cin >> input;
-  }
-  // Don't waste CPU Time for that.
-  if (input == 1) {
-      cout << "Prime factors of " << input << " are: " << "none";
-      return 0;
-  }
-
-  // Vector Type used as dynamic List for Prime Factors
-  // Fills at Algorithm execution
-  // vector<int> primeFactors;
-  string primeFactors = "";
-
-  // Temporary (per while execution) int as prime Factor Candidat.
-  // Gets stored in primeFactors
-  int primeCandidate = 2;
+    //Interface
+    cout << "Primfaktorzerlegung\n" << endl;
+    cout << "Geben Sie eine ganzzahlige positive Zahl ein:" << endl;
+    cin >>input;
 
 
-  /*  Algorithm
-   *    Checks if
-   */
-  while (primeCandidate * primeCandidate <= input){
-      if ((input % primeCandidate) == 0){
-          primeFactors.push_back(primeCandidate);
-          input = input / primeCandidate;
-        }else{
-          primeCandidate++;
-        }
+    //validate input
+    while(input <= 0){
+        cout << "\nError:" << endl;
+        cout << "Geben Sie eine ganzzahlige positive Zahl ein:" << endl;
+        cout << "Bsp.: 5" << endl;
+        cin >>input;
     }
-  // Remaining bit of input is itself a prime
-  primeFactors.push_back(input);
 
-  // Output
-  cout << "Calculation results: \n\n";
-  for (int element: primeFactors)
-    cout << element << endl;
+    if (input == 1) {
+        cout << "Primzahlzerlegung von " << input <<endl;
+        cout << "Die Zahl 1 ist keine Primzahl"<<endl;
+        return 0;
+    }
 
-  return 0;
+
+     string primeFactors = "";
+     int primeCandidate = 2;
+
+     process_input = input;
+
+     while (primeCandidate * primeCandidate <= process_input){
+         if ((process_input % primeCandidate) == 0){
+             primeFactors.push_back(primeCandidate);
+             process_input = process_input / primeCandidate;
+           }else{
+             primeCandidate++;
+           }
+       }
+
+     primeFactors.push_back(process_input);
+
+
+
+    cout << "Primzahlzerlegung: " <<input <<" = ";
+
+    bool first = true;
+    //for each loop
+    for (int element: primeFactors){        //cycle through every number of the arraylist
+        if (first){
+            cout << element;
+            first = false;
+        } else {
+            cout << " * " << element;
+        }
+
+
+    }
+    cout << endl;
+    return 0;
 }
-
-
-/* 
-PSEUDOCODE OF ALGORITHM
-SOURCE: https://de.wikibooks.org/wiki/Algorithmensammlung:_Zahlentheorie:_Primfaktorisierung
-
-  function primfaktoren (n)
-  f ← Leere Liste
-  if n = 1 then return f
-  t ← 2
-  while t * t ≤ n do
-    begin
-    if n mod t = 0 then
-      begin
-      Füge t zur Liste f hinzu
-      n ← n / t
-      end
-    else t ← t + 1
-    end
-  Füge n zur Liste f hinzu
-  return f
-*/
