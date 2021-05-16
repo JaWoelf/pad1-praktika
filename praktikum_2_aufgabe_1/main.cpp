@@ -12,9 +12,9 @@ int main()
     // Welcome
     cout << "##################################################\n"
             "# This Programm calculates the sum of all Numbers,\n"
-            "# from Input 1 to Input 2.\n"
+            "# from Input A to Input B.\n"
             "#\n"
-            "# e.g. Input1 = 1, Input2 = 5\n"
+            "# e.g. A = 1, B = 5\n"
             "# 1+2+3+4+5 = 15\n\n";
 
     // Get Input
@@ -30,22 +30,18 @@ int main()
         input1 = tmp;
       }
 
+
     // Calculation
     // prä-output
     cout << sum;
     while (input1 <= input2){
         sum += input1;
-        input1 ++;
         //step-output
         cout << " + " << input1 ;
+        input1 ++;
       }
 
-    //readability linefeed
-    cout  << "\n\n";
-    // Show Results
-    cout << "Sum = " << sum;
-    //readability linefeed
-    cout  << "\n\n";
+    cout << "\n\nSum = " << sum << "\n\n";
 
   } // While true
   return 0;

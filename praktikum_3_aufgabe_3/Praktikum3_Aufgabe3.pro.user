@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.14.2, 2021-05-02T17:15:36. -->
+<!-- Written by QtCreator 4.14.2, 2021-05-10T14:18:49. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -292,8 +292,9 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/jawo/Schreibtisch/h_da/PAD1/Praktikum 3/Praktikum3_Aufgabe3/Praktikum3_Aufgabe3.pro</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/jawo/Schreibtisch/h_da/PAD1/Praktikum 3/Praktikum3_Aufgabe3/Praktikum3_Aufgabe3.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Praktikum3_Aufgabe32</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/jawo/zweihorn-design/h_da/1. Semester/PAD1/pad1-praktika/praktikum_3_aufgabe_3/Praktikum3_Aufgabe3.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/jawo/zweihorn-design/h_da/1. Semester/PAD1/pad1-praktika/praktikum_3_aufgabe_3/Praktikum3_Aufgabe3.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>

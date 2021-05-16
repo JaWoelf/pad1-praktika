@@ -2,11 +2,18 @@
 #include <vector>
 
 using namespace std;
+// Vector Type used as dynamic List for Prime Factors
+// Fills at Algorithm execution
+// vector<int> primeFactors;
+vector<int> primeFactors;
+// Temporary (per while execution) int as prime Factor Candidat.
+// Gets stored in primeFactors
+int primeCandidate = 2;
+// User Input for calculation.
+int input = 0;
 
 int main()
 {
-  int input = 0;
-
   // UI
   cout << "Integer factorization\n"
           " - Takes a positive Integer\n"
@@ -23,20 +30,10 @@ int main()
       return 0;
   }
 
-  // Vector Type used as dynamic List for Prime Factors
-  // Fills at Algorithm execution
-  // vector<int> primeFactors;
-  string primeFactors = "";
-
-  // Temporary (per while execution) int as prime Factor Candidat.
-  // Gets stored in primeFactors
-  int primeCandidate = 2;
-
-
   /*  Algorithm
-   *    Checks if
+   *
    */
-  while (primeCandidate * primeCandidate <= input){
+  while (primeCandidate <= (input / 2)){
       if ((input % primeCandidate) == 0){
           primeFactors.push_back(primeCandidate);
           input = input / primeCandidate;
@@ -44,13 +41,15 @@ int main()
           primeCandidate++;
         }
     }
+
   // Remaining bit of input is itself a prime
   primeFactors.push_back(input);
 
   // Output
-  cout << "Calculation results: \n\n";
+  cout << "\nCalculation results: \n\n";
   for (int element: primeFactors)
-    cout << element << endl;
+
+    cout << element << "\n";
 
   return 0;
 }
