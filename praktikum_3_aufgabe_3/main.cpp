@@ -26,7 +26,6 @@ int main()
     // its value to num.
     for( int i=input_length; i>0; i--){
       char c = input[i-1] - 48;
-      cout << "\nc at " << i << " = " << c+0;
       if (c < 0 or c > 9){
         cout << "\nUngültiges Zeichen an Stelle " << i+1;
         break;
@@ -34,12 +33,9 @@ int main()
       num += c * pow(10,input_length-i);
     }
 
-    //
+    // QUADRATUR
     num = pow(num,2);
-
-    // Dismantel Num into character Array
     cout << "\nQuadrat der eingegebenen Zahl: " << num;
-    int last_digit = 0;
 
     // get length of number, as needet for char array
     int number_length = 0;
@@ -51,30 +47,23 @@ int main()
 
     char result[number_length*2-1];
 
+    // GET DIGITS
     for(int i=0; i < number_length; i++){
-      cout << "dbg: " << num % 10;
       result[i*2] = num % 10;
       result[i*2+1] = ' ';
       num = num / 10;
     }
 
+    // CHAR ARRAY
+    char c_array[100] = {};
     cout << "\nchar-Array: ";
-    for(int i=0; i < number_length; i++){
-      cout << "\ni: " <<  result[i]+0;
+    for(int i = number_length * 2; i >= 0; i = i-2){
+      c_array[i] = result[i] ;
+      c_array[i-1] = ' ';
+      cout << c_array[i]+0 << c_array[i-1];
     }
-    /*
+    cout << "\n\nEND OF CALCULATION";
 
-    if( (input.lenth() < 1) or (input.length() > 5) ){
-      cout << "\nStringlänge unzulässig.\n";
-
-    }else if(){
-      cout << "\nString darf nur Ziffern enthalten.\n";
-
-    }else{
-      break;
-    }*/
-    cout << "\n\n\n" << input_length << endl;
-    cout << input[1];
   }//while
 
 
