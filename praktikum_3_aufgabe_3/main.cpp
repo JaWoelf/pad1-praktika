@@ -11,7 +11,7 @@ int main()
 
   // User Input with sanity check.
   while (true){
-    cout << "Bitte Zahlenstring eingeben (0-5 Zeichen): ";
+    cout << "\n\nBitte Zahlenstring eingeben (0-5 Zeichen): ";
     cin >> input;
 
     // Check length
@@ -35,7 +35,7 @@ int main()
 
     // QUADRATUR
     num = pow(num,2);
-    cout << "\nQuadrat der eingegebenen Zahl: " << num;
+    cout << "\nQuadrat der eingegebenen Zahl: " << num << "\n\n";
 
     // get length of number, as needet for char array
     int number_length = 0;
@@ -45,24 +45,16 @@ int main()
         n /= 10;
     } while(n);
 
-    char result[number_length*2-1];
 
     // GET DIGITS
-    for(int i=0; i < number_length; i++){
+    char result[number_length*2-1];
+    cout << "char_array:  ";
+    for(int i=0; i < number_length*2; i = i+2){
       result[i*2] = num % 10;
       result[i*2+1] = ' ';
       num = num / 10;
+      cout << result[i*2]+0 << result [i*2+1];
     }
-
-    // CHAR ARRAY
-    char c_array[100] = {};
-    cout << "\nchar-Array: ";
-    for(int i = number_length * 2; i >= 0; i = i-2){
-      c_array[i] = result[i] ;
-      c_array[i-1] = ' ';
-      cout << c_array[i]+0 << c_array[i-1];
-    }
-    cout << "\n\nEND OF CALCULATION";
 
   }//while
 

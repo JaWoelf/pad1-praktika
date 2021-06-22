@@ -7,7 +7,10 @@ using namespace std;
 #define BLACK false;
 
 
-// Figure types
+// Figure Strings (As string is required by specification)
+// single character allows neat praesentation
+// also   whitepam = "p"
+// while  whitepam = 'p'
 const string whitepawn  = "p",
             whiterook   = "r",
             whiteknight = "j",
@@ -38,11 +41,12 @@ string board[8][8] = {
 // regex pattern for user input sanity check
 static regex saneInputPattern("[a-h][1-8]-[a-h][1-8]");
 
-// Whos Turn is this flag? WHITE=true BLACK=false
+// Whos Turn is this flag? WHITE=true BLACK=false (see #define  entries at beginning of file)
 bool turn = WHITE;
-// Who's figure is this? regex_match(ownerPattern, figure)
-// -> WHITE = true, BLACK = false
-static regex ownerPattern("[a-z]");
+
+// regex pattern to recognise, to whom a figure belongs.
+static regex whiteFigurePattern("[a-z]");
+static regex blackFigurePattern("[A-Z]");
 
 // UI templates
 static string cliClear = "\x1B[2J\x1B[H";
@@ -108,13 +112,15 @@ movementCoordinates userInput(){
 
 
 
-
-//    Whos figure is that?
-//      returns true if white, false if not.
-//    ! Be aware that void tiles would also return false. Shall be
+// isWhitesFigure() & isBlacksFigure are not redundant.
+// both will return false for void tile coords
 bool isWhitesFigure(coordinates coords){
-    return regex_match(board[coords.x][coords.y], ownerPattern);
+    return regex_match(board[coords.x][coords.y], whiteFigurePattern);
 }
+bool isBlacksFigure(coordinates coords){
+    return regex_match(board[coords.x][coords.y], blackFigurePattern);
+}
+
 
 //    Whos move is it?
 //      returns true i
@@ -123,19 +129,29 @@ bool isWhitesMove(){
 }
 
 
-/*  is Move Valid  - Called from main()
- *  args: movementCoordinates move | struct containing 2 x/y pairs of board-coordinates
- *                                   indexing moving figure and target field.
- *  return: bool                   | Rather move is valid or not
- *  throw:
- *
- *  Funktion:
+/*  from main()
+ *      args:
+ *          movementCoordinates move {figure{x,y},target{x,y}}
+ *          Indizes, pointing to figute and target in board[8][8]
+ *      functional:
+ *          1. basic sanity check
+ *             e.g. color of figure & target differ, figure is not voidtile,... *
+ *          2. identify figuretype
+ *             e.g. figure is whitepawn or is blackpawn
+ *                -> return isPawnMoveValid()
+ *      returns:
+ *          bool func() | function validating figures movement.
+ *      exception:
+ *          sanity check fails
+ *          figure isn't recogniced
  */
 bool isMoveValid(movementCoordinates move)
 {
-
   string figure = board[move.figure.x][move.figure.y];
   string target = board[move.target.x][move.target.y];
+
+  if ( isWhitesMove() == isWhitesFigure(move.figure) =! isWhitesFigure(move.target) )
+
 
   if ( figure == voidtile){
       notificationsStack.push_back("Cannot move empty Field.");

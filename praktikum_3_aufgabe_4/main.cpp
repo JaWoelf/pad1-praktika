@@ -115,7 +115,6 @@ int main()
 
 
         // Calculate possible setups
-        // setups gate:
         // HARD CODING IS VERY BAD PRACTICE BUT WHO CARES?
         //s
         x = 4 +             // one gatekeeper from 4

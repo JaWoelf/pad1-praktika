@@ -5,15 +5,18 @@ double argument_input = 0;
 double error_input = 0;
 static double reihendarstellung_result = 0;
 static uint32_t anzahl_sumanden_result = 0;
+
 double get_error(double x){
      return ((   abs(reihendarstellung_result - exp(x))  )/exp(x));
 }
+
 bool check_if_error_of_result_is_bigger_than_error(double x, double error){
     if(get_error(x) > error){
         return true;
     }
     return false;
 }
+
 double get_fakultaet(uint32_t anzahl){
     double result = 1;
     for(int i = 1; i <= anzahl; i++){
@@ -21,6 +24,7 @@ double get_fakultaet(uint32_t anzahl){
     }
     return result;
 }
+
 double get_exponation_of(double x, uint32_t anzahl){
     double result = 1;
     for(int i = 1; i <= anzahl; i++){
@@ -28,12 +32,14 @@ double get_exponation_of(double x, uint32_t anzahl){
     }
     return result;
 }
+
 double get_summand(double x, uint32_t anzahl){
     double expo = get_exponation_of(x, anzahl);
     double fak = get_fakultaet(anzahl);
     uint32_t anzahl_buffer = anzahl;
     return expo/fak;
 }
+
 double function(double x, uint32_t anzahl){
     if(anzahl == 0){
         return 1;
@@ -44,6 +50,7 @@ double function(double x, uint32_t anzahl){
 //    cout << summant_1 << " / " << summant_2 << " + ";
     return summant_1 + summant_2;
 }
+
 uint32_t compute_rec(double x, double error, uint32_t anzahl){
     reihendarstellung_result = function(x, anzahl);
     double buffer = reihendarstellung_result;
@@ -53,10 +60,12 @@ uint32_t compute_rec(double x, double error, uint32_t anzahl){
     }
     return anzahl;
 }
+
 void compute(double x, double error){
     //Überprüft reihendarstellung_result mit dem eigentlichen result wert von x
     anzahl_sumanden_result =  compute_rec( x, error, 0) + 1;
 }
+
 int main()
 {
     // ask for number of arguments
