@@ -10,5 +10,5 @@ struct stromanbieter{
     float price;
     float bonus;
     float result;
-    float id;
+    int id;
 };
