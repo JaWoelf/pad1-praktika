@@ -1,9 +1,0 @@
-Questionable use of curly braces in "config += {console} c++11"
-    Error: undefined symbol in: "[console]"
-Questionable use of curly braces in "config -= {app_bundle}"
-    Error: undefined symbol in: "[app_bundle]"
-Questionable use of curly braces in "config -= {qt}"
-    Error: undefined symbol in: "[qt]"
-Circuit: TEMPLATE = app
-
-Fatal Error: Multiple instances of "Config"
