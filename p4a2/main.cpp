@@ -62,6 +62,9 @@ vector<string> notificationsStack;
 struct coordinates{int x, y;};
 struct movementCoordinates{coordinates figure, target;};
 
+
+git mv praktikum_2_aufgabe_2
+
 /*
  *
  *
