@@ -3,6 +3,9 @@
 #include <string>
 #include <stdlib.h>
 using namespace std;
+#define WHITE true;
+#define BLACK false;
+
 
 // Figure types
 const string whitepawn  = "p",
@@ -11,7 +14,7 @@ const string whitepawn  = "p",
             whitebishop = "b",
             whitequeen  = "q",
             whiteking   = "k",
-            blackpawn  = "P",
+            blackpawn   = "P",
             blackrook   = "R",
             blackknight = "J",
             blackbishop = "B",
@@ -35,6 +38,12 @@ string board[8][8] = {
 // regex pattern for user input sanity check
 static regex saneInputPattern("[a-h][1-8]-[a-h][1-8]");
 
+// Whos Turn is this flag? WHITE=true BLACK=false
+bool turn = WHITE;
+// Who's figure is this? regex_match(ownerPattern, figure)
+// -> WHITE = true, BLACK = false
+static regex ownerPattern("[a-z]");
+
 // UI templates
 static string cliClear = "\x1B[2J\x1B[H";
 static string uiIndexHorizontal = "\n   A B C D E F G H ";
@@ -44,10 +53,18 @@ static string uiIndexHorizontal = "\n   A B C D E F G H ";
 // drawUI() shall empty notificationStack on print.
 vector<string> notificationsStack;
 
+
 // several functions require x/y coordinates in differend context, better use a template.
 struct coordinates{int x, y;};
 struct movementCoordinates{coordinates figure, target;};
 
+/*
+ *
+ *
+ *    FUNCTIONAL
+ *
+ *  ############################################
+ */
 
 void drawUI()
 {
@@ -63,7 +80,6 @@ void drawUI()
     }//for x
   }//for y
 }
-
 
 
 movementCoordinates userInput(){
@@ -91,43 +107,97 @@ movementCoordinates userInput(){
 };
 
 
+
+
+//    Whos figure is that?
+//      returns true if white, false if not.
+//    ! Be aware that void tiles would also return false. Shall be
+bool isWhitesFigure(coordinates coords){
+    return regex_match(board[coords.x][coords.y], ownerPattern);
+}
+
+//    Whos move is it?
+//      returns true i
+bool isWhitesMove(){
+  return turn;
+}
+
+
+/*  is Move Valid  - Called from main()
+ *  args: movementCoordinates move | struct containing 2 x/y pairs of board-coordinates
+ *                                   indexing moving figure and target field.
+ *  return: bool                   | Rather move is valid or not
+ *  throw:
+ *
+ *  Funktion:
+ */
 bool isMoveValid(movementCoordinates move)
 {
 
+  string figure = board[move.figure.x][move.figure.y];
+  string target = board[move.target.x][move.target.y];
 
+  if ( figure == voidtile){
+      notificationsStack.push_back("Cannot move empty Field.");
+  }
+
+  if ((figure == whitepawn) || (figure == blackpawn))
+    return isPawnMoveValid();
+  else if ((figure == whiterook) || (figure == blackrook))
+    return isRookMoveValid();
+  else if ((figure == whiteknight) || (figure == blackknight))
+    return isKnightMoveValid();
+  else if ((figure == whitebishop) || (figure == blackbishop))
+    return isBishopMoveValid();
+  else if ((figure == whitequeen) || (figure == blackqueen))
+    return isQueenMoveValid();
+  else if ((figure == whiteking) || (figure == blackking))
+    return isKingMoveValid();
+  else
+    throw "Unknown figure exception";
 }
 
 
 int main()
 {
-  // Draw UI
-  //    Checkboard
-  //    Figures
-  //    Notifications
-  drawUI();
+  while(true){
+      // Draw UI
+      //    Checkboard
+      //    Figures
+      //    Notifications
+      drawUI();
+
+      // User Input -> Move
+      //    Listen for Input
+      //    Fetch Keyword "exit" to terminate
+      //    Sanitycheck (regex)
+      //    Convert input string to movementCoordinates
+      movementCoordinates move; // must declare out of try for visibility
+      try {
+        move = userInput();
+      } catch (string err) {
+        // Sanity Check failed - malformatted user input.
+        notificationsStack.insert( notificationsStack.begin(), err);
+        continue;
+      }
+
+      // Validate Movement
+      //    Some very basic
+      //    Identify selected figure
+      //    Call movement validation function for that figure
+      if ( isMoveValid(move)){
+
+        }
 
 
-  // User Input -> Move
-  //    Listen for Input
-  //    Fetch Keyword "exit" to terminate
-  //    Sanitycheck (regex)
-  //    Convert input string to movementCoordinates
-  try {
-    movementCoordinates move = userInput();
-
-  } catch (string err) {
-    notificationsStack.insert( notificationsStack.begin(), err);
-
-  }
 
 
-
-  if (move == movementCoordinates)
-    return 0;
-
-  // Validate
-  isMoveValid(move);
+      // Now  Validate
+     // isMoveValid(move);
 
 
-  return 0;
-}
+      //return 0;
+
+
+  } // while(true)
+}// main()
