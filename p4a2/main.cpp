@@ -80,9 +80,9 @@ bool isFieldBlack(coordinates m_coords){
     return regex_match(board[m_coords.x][m_coords.y], blackFigurePattern);
 }
 
-// Check if location is empty. 
+// Check if location is empty.
 bool isFieldEmpty(coordinates m_coords){
-    return ( board[coords.x][coords.y] == voidtile )
+    return ( board[m_coords.x][m_coords.y] == voidtile );
 }
 
 // location color bool
@@ -101,7 +101,7 @@ bool figureColorBool(string m_figure){
 
 // Whos turn bool
 // as #defined WHITE true  BLACK false
-bool whitesTurn(){
+bool isWhitesTurn(){
     return turn;
 }
 // Whos turn string  (for UI)
@@ -133,16 +133,13 @@ void drawUI()
        cout << board[x][y] << " ";
     }//for x
   }//for y
+
+  while (notificationsStack.size() > 0){
+      cout << "\n" + notificationsStack.back();
+      notificationsStack.pop_back();
+  }
+  cout << "\nSet your turn. e.g. a7-b6\n";
 }
-
-
-int normaliseMoveDirection(int m_index){
-    if ( m_index > 0 )
-        return m_index;
-    else
-        return m_index * (-1);
-}
-
 
 
 // Get and process user Input
@@ -177,9 +174,21 @@ movementCoordinates userInput(){
  *
  *  ############################################
  */
-// 
-bool isLegalMovePawn(movementCoordinates m_move){
+//
 
+
+int normaliseMoveDirection(int m_index){
+    if ( m_index > 0 )
+        return m_index;
+    else
+        return m_index * (-1);
+}
+
+bool hasLineOfSight(movementCoordinates m_move){
+  return true;
+}
+
+bool isLegalMovePawn(movementCoordinates m_move){
     coordinates figure = m_move.figure;
     coordinates target = m_move.target;
     int verticalDistance   = normaliseMoveDirection( (figure.y - target.y) );
@@ -188,61 +197,89 @@ bool isLegalMovePawn(movementCoordinates m_move){
     if (horizontalDistance > 1)
         return false;
 
-    switch(verticalDistance){   
+    switch(verticalDistance){
         case(1):
             return true;
-        case(2): 
-            if (whitesTurn() && (figure.y != 2))
-                return false;
-            else if ( figure.y != 7 )
-                return false;
-            else
+        case(2):
+            if ((figure.y == 2) && isWhitesTurn())
                 return true;
-        default:
-            return false;
-    }//switch  
+
+            if ((figure.y == 7) && !isWhitesTurn())
+                return true;
+
+    }//switch
+    return false;
 } //isLegalMovePawn
 
 
 bool isLegalMoveRook(movementCoordinates m_move){
-
     coordinates figure = m_move.figure;
     coordinates target = m_move.target;
     int verticalDistance   = normaliseMoveDirection( (figure.y - target.y) );
     int horizontalDistance = normaliseMoveDirection( (figure.x - target.x) );
 
     // must only move in one direction
-    if ( (verticalDistance > 0) || (horizontalDistance > 0) ) 
+    if ( (verticalDistance > 0) && (horizontalDistance > 0) )
         return false;
 
-    // check direction is clear
-    return hasLineOfSight(m_move);   
+    // move is Valid, if target is in line of sight.
+    return hasLineOfSight(m_move);
 
 } //isLegalMoveRook
 
 
 bool isLegalMoveKnight(movementCoordinates m_move){
-    return true;
-   
-}
+    coordinates figure = m_move.figure;
+    coordinates target = m_move.target;
+    int verticalDistance   = normaliseMoveDirection( (figure.y - target.y) );
+    int horizontalDistance = normaliseMoveDirection( (figure.x - target.x) );
+
+    // must move 2x/1y or 1x/2y
+    if ((verticalDistance + horizontalDistance) == 3)
+        return true;
+    else
+        return false;
+
+} //isLegalMoveKnight
+
+
 bool isLegalMoveBishop(movementCoordinates m_move){
-    return true;
-   
-}
+    coordinates figure = m_move.figure;
+    coordinates target = m_move.target;
+    int verticalDistance   = normaliseMoveDirection( (figure.y - target.y) );
+    int horizontalDistance = normaliseMoveDirection( (figure.x - target.x) );
+
+    // must move diagonally
+    if ( verticalDistance != horizontalDistance)
+        return false;
+    else
+        return hasLineOfSight(m_move);
+
+} //isLeghalMove
+
+
 bool isLegalMoveQueen(movementCoordinates m_move){
-    return true;
-   
-}
+    return (isLegalMoveBishop(m_move) or isLegalMoveRook(m_move));
+
+} //isLegal QUEEN
+
 
 bool isLegalMoveKing(movementCoordinates m_move){
-    return true;
-   
-}
+    if ( (  normaliseMoveDirection((m_move.figure.y - m_move.target.y))
+          + normaliseMoveDirection((m_move.figure.x - m_move.target.x)))
+         <= 2)
+        return true;
+    else
+        return false;
+
+} //isLegal KING
+
 
 // Moves which expose own king to check are illegal.
 bool isMoveSelfCheck(movementCoordinates m_move){
-  
-}
+    return false;
+
+} // isMoveSelfCheck
 
 
 
@@ -276,54 +313,52 @@ bool isMoveValid(movementCoordinates m_move)
       return false;
 
   // Wrong color wants to move
-  } else if ( turnColorBool() != figureColorBool() ){
-      notificationsStack.push_back(getTurnColorString() + " - make a move.");
+  } else if ( isWhitesTurn() != isFieldWhite(m_move.figure) ){
+      notificationsStack.push_back(turnColorString() + " - make a move.");
       return false;
 
-  // target is of same color as figure 
+  // target is of same color as figure
   } else if ( figureColorBool(figure) == figureColorBool(target) ){
       notificationsStack.push_back("Cannot beat friendly figures.");
       return false;
   }
-   
 
-  // Figure Specific Checks      
+
+  // Figure Specific Checks
 
   if ((figure == whitepawn) || (figure == blackpawn))
      isLegal = isLegalMovePawn(m_move);
-  
+
   else if ((figure == whiterook) || (figure == blackrook))
       isLegal = isLegalMoveRook(m_move);
- 
+
   else if ((figure == whiteknight) || (figure == blackknight))
       isLegal = isLegalMoveKnight(m_move);
- 
+
   else if ((figure == whitebishop) || (figure == blackbishop))
      isLegal = isLegalMoveBishop(m_move);
- 
+
   else if ((figure == whitequeen) || (figure == blackqueen))
       isLegal = isLegalMoveQueen(m_move);
- 
+
   else if ((figure == whiteking) || (figure == blackking))
       isLegal = isLegalMoveKing(m_move);
-  
+
   else
       throw "Unknown figure exception";
 
-  // Move cannot expose own king to check. 
-  //  
-  if ( isMoveSelfCheck(m_move) ){
-      notificationsStack.push_back("Your cannot expose your Kng to Check.")
-      return false;
-
-  } else
-      return isLegal;
+  return isLegal;
 
 }// isMoveLegal()
 
+bool isFigureBeaten(coordinates move){
+    return (board[move.x][move.y] == voidtile);
+};
 
-
-
+/*
+ *        MAIN
+ *
+ */
 
 int main()
 {
@@ -344,27 +379,30 @@ int main()
       movementCoordinates move; // must declare out of try for visibility
       try {
           move = userInput();
+          int tgtx = move.target.x, tgty = move.target.y,
+              fgrx = move.figure.x, fgry = move.figure.y;
+
+          // on invalid move, re-try turn.
+          if (!isMoveValid(move))
+               continue;
+
+          // notify UI if a figure gets beaten.
+          if (isFigureBeaten(move.target))
+             notificationsStack.push_back(board[fgrx][fgry] + " beats " + board[tgtx][tgty] + ".");
+
+          // apply move
+          board[tgtx][tgty] = board[fgrx][fgry];
+          board[fgrx][fgry] = voidtile;
+
+          // CHECK-STATE?
+          //
+          isCheckState();
+
+
       } catch (string err) {
           // Sanity Check failed - malformatted user input.
           notificationsStack.insert( notificationsStack.begin(), err);
           continue;
       }
-
-
-      // Verify legality of move
-      if ( isMoveValid(move)){
-
-        }
-
-
-
-
-      // Now  Validate
-     // isMoveValid(move);
-
-
-      //return 0;
-
-
   } // while(true)
 }// main()
