@@ -63,16 +63,63 @@ struct coordinates{int x, y;};
 struct movementCoordinates{coordinates figure, target;};
 
 
-git mv praktikum_2_aufgabe_2
+/*
+ *
+ *
+ *    Board Information Functions
+ *
+ *  ############################################
+ */
+// Check if location is occupied by white figure.
+bool isFieldWhite(coordinates m_coords){
+    return regex_match(board[m_coords.x][m_coords.y], whiteFigurePattern);
+}
+
+// Check if location is occupied by black figure.
+bool isFieldBlack(coordinates m_coords){
+    return regex_match(board[m_coords.x][m_coords.y], blackFigurePattern);
+}
+
+// Check if location is empty. 
+bool isFieldEmpty(coordinates m_coords){
+    return ( board[coords.x][coords.y] == voidtile )
+}
+
+// location color bool
+// as #defined WHITE true  BLACK false
+// may also return false on void tiles.
+bool fieldColorBool(coordinates m_coords){
+    return regex_match(board[m_coords.x][m_coords.y], whiteFigurePattern);
+}
+
+// figure color bool
+// as #defined WHITE true BLACK false
+// may also return false on void tiles
+bool figureColorBool(string m_figure){
+    return regex_match(m_figure, whiteFigurePattern);
+}
+
+// Whos turn bool
+// as #defined WHITE true  BLACK false
+bool whitesTurn(){
+    return turn;
+}
+// Whos turn string  (for UI)
+string turnColorString(){
+    if (isWhitesTurn())
+        return "WHITE";
+    return "BLACK";
+}
+
 
 /*
  *
  *
- *    FUNCTIONAL
+ *    User Interface
  *
  *  ############################################
  */
-
+//  Draw CLI
 void drawUI()
 {
   cout << cliClear;
@@ -89,6 +136,16 @@ void drawUI()
 }
 
 
+int normaliseMoveDirection(int m_index){
+    if ( m_index > 0 )
+        return m_index;
+    else
+        return m_index * (-1);
+}
+
+
+
+// Get and process user Input
 movementCoordinates userInput(){
   movementCoordinates move;
   string userInputString;
@@ -113,23 +170,80 @@ movementCoordinates userInput(){
   };
 };
 
+/*
+ *
+ *
+ *    Movement & Chess Rules Checking
+ *
+ *  ############################################
+ */
+// 
+bool isLegalMovePawn(movementCoordinates m_move){
+
+    coordinates figure = m_move.figure;
+    coordinates target = m_move.target;
+    int verticalDistance   = normaliseMoveDirection( (figure.y - target.y) );
+    int horizontalDistance = normaliseMoveDirection( (figure.x - target.x) );
+
+    if (horizontalDistance > 1)
+        return false;
+
+    switch(verticalDistance){   
+        case(1):
+            return true;
+        case(2): 
+            if (whitesTurn() && (figure.y != 2))
+                return false;
+            else if ( figure.y != 7 )
+                return false;
+            else
+                return true;
+        default:
+            return false;
+    }//switch  
+} //isLegalMovePawn
 
 
-// isWhitesFigure() & isBlacksFigure are not redundant.
-// both will return false for void tile coords
-bool isWhitesFigure(coordinates coords){
-    return regex_match(board[coords.x][coords.y], whiteFigurePattern);
+bool isLegalMoveRook(movementCoordinates m_move){
+
+    coordinates figure = m_move.figure;
+    coordinates target = m_move.target;
+    int verticalDistance   = normaliseMoveDirection( (figure.y - target.y) );
+    int horizontalDistance = normaliseMoveDirection( (figure.x - target.x) );
+
+    // must only move in one direction
+    if ( (verticalDistance > 0) || (horizontalDistance > 0) ) 
+        return false;
+
+    // check direction is clear
+    return hasLineOfSight(m_move);   
+
+} //isLegalMoveRook
+
+
+bool isLegalMoveKnight(movementCoordinates m_move){
+    return true;
+   
 }
-bool isBlacksFigure(coordinates coords){
-    return regex_match(board[coords.x][coords.y], blackFigurePattern);
+bool isLegalMoveBishop(movementCoordinates m_move){
+    return true;
+   
+}
+bool isLegalMoveQueen(movementCoordinates m_move){
+    return true;
+   
 }
 
-
-//    Whos move is it?
-//      returns true i
-bool isWhitesMove(){
-  return turn;
+bool isLegalMoveKing(movementCoordinates m_move){
+    return true;
+   
 }
+
+// Moves which expose own king to check are illegal.
+bool isMoveSelfCheck(movementCoordinates m_move){
+  
+}
+
 
 
 /*  from main()
@@ -148,43 +262,79 @@ bool isWhitesMove(){
  *          sanity check fails
  *          figure isn't recogniced
  */
-bool isMoveValid(movementCoordinates move)
+bool isMoveValid(movementCoordinates m_move)
 {
-  string figure = board[move.figure.x][move.figure.y];
-  string target = board[move.target.x][move.target.y];
+  string figure = board[m_move.figure.x][m_move.figure.y];
+  string target = board[m_move.target.x][m_move.target.y];
+  bool isLegal = true;
 
-  if ( isWhitesMove() == isWhitesFigure(move.figure) =! isWhitesFigure(move.target) )
+  // Generic Checks
 
+  // invalid: figure cannot be voidtile
+  if ( figure == voidtile ){
+      notificationsStack.push_back("Select one of your figures to move.");
+      return false;
 
-  if ( figure == voidtile){
-      notificationsStack.push_back("Cannot move empty Field.");
+  // Wrong color wants to move
+  } else if ( turnColorBool() != figureColorBool() ){
+      notificationsStack.push_back(getTurnColorString() + " - make a move.");
+      return false;
+
+  // target is of same color as figure 
+  } else if ( figureColorBool(figure) == figureColorBool(target) ){
+      notificationsStack.push_back("Cannot beat friendly figures.");
+      return false;
   }
+   
+
+  // Figure Specific Checks      
 
   if ((figure == whitepawn) || (figure == blackpawn))
-    return isPawnMoveValid();
+     isLegal = isLegalMovePawn(m_move);
+  
   else if ((figure == whiterook) || (figure == blackrook))
-    return isRookMoveValid();
+      isLegal = isLegalMoveRook(m_move);
+ 
   else if ((figure == whiteknight) || (figure == blackknight))
-    return isKnightMoveValid();
+      isLegal = isLegalMoveKnight(m_move);
+ 
   else if ((figure == whitebishop) || (figure == blackbishop))
-    return isBishopMoveValid();
+     isLegal = isLegalMoveBishop(m_move);
+ 
   else if ((figure == whitequeen) || (figure == blackqueen))
-    return isQueenMoveValid();
+      isLegal = isLegalMoveQueen(m_move);
+ 
   else if ((figure == whiteking) || (figure == blackking))
-    return isKingMoveValid();
+      isLegal = isLegalMoveKing(m_move);
+  
   else
-    throw "Unknown figure exception";
-}
+      throw "Unknown figure exception";
+
+  // Move cannot expose own king to check. 
+  //  
+  if ( isMoveSelfCheck(m_move) ){
+      notificationsStack.push_back("Your cannot expose your Kng to Check.")
+      return false;
+
+  } else
+      return isLegal;
+
+}// isMoveLegal()
+
+
+
 
 
 int main()
 {
   while(true){
+
       // Draw UI
       //    Checkboard
       //    Figures
       //    Notifications
       drawUI();
+
 
       // User Input -> Move
       //    Listen for Input
@@ -193,17 +343,15 @@ int main()
       //    Convert input string to movementCoordinates
       movementCoordinates move; // must declare out of try for visibility
       try {
-        move = userInput();
+          move = userInput();
       } catch (string err) {
-        // Sanity Check failed - malformatted user input.
-        notificationsStack.insert( notificationsStack.begin(), err);
-        continue;
+          // Sanity Check failed - malformatted user input.
+          notificationsStack.insert( notificationsStack.begin(), err);
+          continue;
       }
 
-      // Validate Movement
-      //    Some very basic
-      //    Identify selected figure
-      //    Call movement validation function for that figure
+
+      // Verify legality of move
       if ( isMoveValid(move)){
 
         }
